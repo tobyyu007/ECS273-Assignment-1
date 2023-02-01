@@ -19,7 +19,9 @@ export default {
         //console.log(this.store.wordCount);
     },
   components: {
-    wordcloud
+    wordcloud,
+    ExampleWithLegend,
+    Notes
   },
   methods: {
     wordClickHandler(name, value, vm) {
@@ -49,18 +51,24 @@ export default {
 
 </script>
 
-<!--This is using the grid component from Vuetify to do layout design-->
 <template>
-  <div id="app">
-      <wordcloud
-      :data="defaultWords"
-      nameKey="name"
-      valueKey="value"
-      :color="myColors"
-      :showTooltip="true"
-      :wordClick="wordClickHandler">
-      </wordcloud>
-  </div>
+  <v-container id="main-container" class="d-flex flex-column flex-nowrap" fluid>
+    <v-row no-gutters>
+      <v-col>
+        <wordcloud
+          :data="defaultWords"
+          nameKey="name"
+          valueKey="value"
+          :color="myColors"
+          :showTooltip="true"
+          :wordClick="wordClickHandler">
+        </wordcloud>
+      </v-col>
+      <v-col>
+        <Notes/>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <style scoped>

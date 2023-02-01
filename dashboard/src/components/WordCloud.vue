@@ -2,7 +2,7 @@
   <div class="wordCloud" v-resize="onResize"></div>
 </template>
 
-<script>
+<script lang="ts">
 import * as d3 from 'd3'
 import * as cloud from 'd3-cloud'
 import * as d3ScaleChromatic from 'd3-scale-chromatic'
@@ -115,7 +115,6 @@ export default {
     }
   },
   mounted () {
-    console.log("mounted");
     this.getSize()
     this.chart = this.createChart()
     this.renderChart()
@@ -123,7 +122,6 @@ export default {
   methods: {
     onResize () {
       this.getSize()
-      console.log("onresize");
       throttle(this.update)
     },
     getSize () {
@@ -208,7 +206,7 @@ export default {
             .style("opacity", 0);
       const text = centeredChart.selectAll('text')
               .data(data)
-           .enter().append('text')
+              .enter().append('text')
               .style('font-size', d => d.size + 'px')
               .style('font-family', d => d.font)
               .style('fill', (d, i) => fill(i))
@@ -223,12 +221,13 @@ export default {
                 tooltip.transition()
                     .duration(200)
                     .style("opacity", .7)
-                tooltip.html(nameKey + ': ' + d[nameKey] + "<br/>"  + valueKey + ': ' + d[valueKey])
+                console.log(d);
+                //tooltip.html("test");
+                tooltip.html(d.srcElement.__data__.name + "<br/>" + '(' + d.srcElement.__data__.value + ')')
             })
             .on("mousemove", function(d) {
-                tooltip.html(d)  
-                    .style("left", d + "px")     
-                    .style("top", d - 40 + "px");
+                tooltip.style("left", d.clientX + 20 + "px") 
+                       .style("top", d.clientY - 40 + "px");
             })
             .on("mouseout", function(d) {
                 tooltip.transition()

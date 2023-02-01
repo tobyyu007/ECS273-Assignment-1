@@ -28,7 +28,7 @@ export default {
   },
   data() {
     var wordCount = this.store.wordCount;
-    // console.log("123");
+    // console.log("1234");
     var words = Object.keys(wordCount);
     var wordCountIndex = 0;
     var resultArray = Object.keys(wordCount).map(function(word){

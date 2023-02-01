@@ -15,14 +15,13 @@
     "axios": "^1.2.1",
     "concurrently": "^7.6.0",
     "d3": "^7.8.0",
+    "d3-cloud": "^1.2.5",
     "lodash": "^4.17.21",
     "pinia": "^2.0.28",
     "vite-plugin-vuetify": "^1.0.1",
     "vue": "^3.2.45",
-    "vue-wordcloud": "^1.1.1",
-    "vuetify": "^3.0.6",
-    "vuewordcloud": "^19.0.0",
-    "vuex": "^4.0.2"
+    "vue-resize-directive": "^1.2.0",
+    "vuetify": "^3.0.6"
   },
   "devDependencies": {
     "@types/d3": "^7.4.0",

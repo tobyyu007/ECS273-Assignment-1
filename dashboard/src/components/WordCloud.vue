@@ -7,6 +7,8 @@ import * as d3 from 'd3'
 import * as cloud from 'd3-cloud'
 import * as d3ScaleChromatic from 'd3-scale-chromatic'
 import resize from 'vue-resize-directive'
+import axios from 'axios';
+import { server } from '../helper';
 
 function throttle (method, context) {
   clearTimeout(method.tid)
@@ -66,9 +68,9 @@ const props = {
     type: [String, Array], // using d3 color schemes or self defined colors
     default: 'Category10'
   },
-  data: {
+  jsonData: {
     type: Array,
-    required: true
+    required: false
   },
   nameKey: {
     type: String,
@@ -94,9 +96,35 @@ export default {
   props,
   data () {
     return {
+      jsonData: [] as string[],
       svgWidth: 0,
       svgHeight: 0
     }
+  },
+  created() {
+    axios.post(`${server}/fetchExample`)
+        .then(resp => {
+            //console.log(resp.data.wordCount);
+            //this.jsonData = resp.data.wordCount;
+            var wordCount = resp.data.wordCount;
+            var words = Object.keys(wordCount);
+            var wordCountIndex = 0;
+            var resultArray = Object.keys(wordCount).map(function(word){
+                let person = {
+                  "name": words[wordCountIndex],
+                  "value": wordCount[word]
+                }
+                wordCountIndex++;
+                return person;
+            });
+            //console.log(resultArray);
+            this.jsonData = resultArray;
+            console.log(this.jsonData);
+            this.chart = this.createChart()
+            this.renderChart()
+            return true;
+        })
+        .catch(error => console.log(error));
   },
   computed: {
     size () {
@@ -107,8 +135,8 @@ export default {
       return { width, height }
     },
     words () { // sort data in desc order, so as to get the right fontScale
-      const { data, valueKey } = this
-      const words = data.sort(function (a, b) {
+      const { jsonData, valueKey } = this
+      const words = jsonData.sort(function (a, b) {
         return parseFloat(b[valueKey]) - parseFloat(a[valueKey])
       })
       return words.slice(0, 100)
@@ -194,7 +222,7 @@ export default {
       this.layout = layout
       layout.start()
     },
-    draw (data) {
+    draw (jsonData) {
       const { layout, chart, color, nameKey, valueKey, showTooltip, wordClick } = this
       const fill = this.getColorScale(color)
       const vm = this
@@ -205,7 +233,7 @@ export default {
             .attr("class", "wordcloud--tooltip")
             .style("opacity", 0);
       const text = centeredChart.selectAll('text')
-              .data(data)
+              .data(jsonData)
               .enter().append('text')
               .style('font-size', d => d.size + 'px')
               .style('font-family', d => d.font)

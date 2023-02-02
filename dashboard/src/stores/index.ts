@@ -3,18 +3,9 @@ import { defineStore } from 'pinia'
 import { isEmpty } from 'lodash';
 import { server } from '../helper';
 
-interface ScatterPoint extends Point{
-    cluster: string;
-}
-
-
 export const createStore = defineStore('App', {
 	state: () => ({
-        wordCount: [] as ScatterPoint[],
-        size: { width: 0, height: 0 } as ComponentSize,
-        margin: { left: 20, right: 20, top: 20, bottom: 40 } as Margin,
-        methods: ['PCA', 't-SNE'] as string[],
-        selectedMethod: 'PCA', // default value
+        wordCount: [] as string[],
     }),
     getters: {
         resize: (state) => {
@@ -23,9 +14,10 @@ export const createStore = defineStore('App', {
     },
     actions: {
         async fetchExample(method: string) { // same API request but in slightly different syntax when it's declared as a method in a component or an action in the store.
-            axios.post(`${server}/fetchExample`, {method: method})
+            axios.post(`${server}/fetchExample`)
                 .then(resp => {
                     this.wordCount = resp.data.wordCount;
+                    console.log(this.wordCount);
                     return true;
                 })
                 .catch(error => console.log(error));

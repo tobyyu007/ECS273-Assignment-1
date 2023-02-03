@@ -263,9 +263,13 @@ export default {
       if (words.length) {
         fontSizeScale.domain([+words[words.length - 1][valueKey] || 1, +words[0][valueKey]])
       }
-      // clear chart
-      chart.select('g').remove()
-      layout.stop().size([width, height]).words(words).start()
+      if (chart != null)  // chart 還沒有畫
+      {
+        // clear chart
+        chart.select('g').remove()
+        layout.stop().size([width, height]).words(words).start()
+      }
+      
     }
   }
 }

@@ -1,46 +1,52 @@
+import re
+from collections import defaultdict
 import matplotlib.pyplot as plt
 import nltk
-from wordcloud import WordCloud, STOPWORDS
-from bs4 import BeautifulSoup
-import re, string, unicodedata
+from nltk.stem import WordNetLemmatizer
 from nltk.tokenize.toktok import ToktokTokenizer
-from nltk.stem import LancasterStemmer, WordNetLemmatizer
-from collections import defaultdict
+from nltk.stem.porter import PorterStemmer
+from wordcloud import WordCloud, STOPWORDS
+from tqdm import tqdm
+import string
 
-
-def preprocess(titles):
+def preprocess(abstracts):
     nltk.download('stopwords')
     nltk.download('wordnet')
     nltk.download('omw-1.4')
-    processedTitles = defaultdict(int)
-    stopword_list = nltk.corpus.stopwords.words('english')
+    processedAbstracts = defaultdict(int)
     tokenizer = ToktokTokenizer()
     lemmatizer = WordNetLemmatizer()
+    nltkStopWord = nltk.corpus.stopwords.words('english')
+    wordCloudStopWord = set(STOPWORDS)
+    porterStemmer = PorterStemmer()
 
-    for index, ogTitle in enumerate(titles):
-        # Remove html strips
-        soup = BeautifulSoup(ogTitle, "html.parser")
-        ogTitle = soup.get_text()
+    for ogAbstract in tqdm(abstracts):
+        if str(ogAbstract) != "nan":  # 在資料集中有資料
+            # 只保留字母，再將文字轉為小寫
+            # Remove non-letter characters and convert the string to lower case
+            reTitle = re.sub('[^a-zA-Z]', " ", ogAbstract)
+            reTitle = reTitle.lower()
 
-        # Remove non-letter characters and convert the string to lower case
-        ogTitle = re.sub('\[[^]]*\]', '', ogTitle)
-        ogTitle = re.sub("[^a-zA-Z]", " ", ogTitle)
-        ogTitle = ogTitle.lower()
+            # 切字 Tokenization
+            tokens = tokenizer.tokenize(reTitle)
+            tokens = [token.strip() for token in tokens]
 
-        # Text stemming
-        text = ' '.join([lemmatizer.lemmatize(word) for word in ogTitle.split()])
+            # 移除 stopwords
+            stopped = []
+            for token in tokens:
+                if token not in nltkStopWord and token not in wordCloudStopWord:
+                    stopped.append(token)
 
-        # Remove stopwords
-        tokens = tokenizer.tokenize(text)
-        tokens = [token.strip() for token in tokens]
-        filtered_tokens = [token for token in tokens if token not in stopword_list]
-        filtered_text = ' '.join(filtered_tokens)
+            # Text stemming
+            #stemmed = [porterStemmer.stem(word) for word in stopped]
+            lemmatized = [lemmatizer.lemmatize(word) for word in stopped]
+            #stemmed = [porterStemmer.stem(word) for word in lemmatized]
 
-        for token in filtered_tokens:
-            processedTitles[token] += 1
+            for word in lemmatized:
+                if len(word) > 1:  # 不要包含單一字母 (可能是代號)
+                    processedAbstracts[word] += 1
 
-    print("Pre-process complete")
-    return processedTitles
+    return processedAbstracts
 
 
 def ShowWordCloud(word_list: list[str]):

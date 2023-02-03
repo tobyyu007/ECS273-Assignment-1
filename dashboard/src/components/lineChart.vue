@@ -1,60 +1,46 @@
 <template>
-  <div style="height: 500px">
-    <Bar 
-      :data="jsonData"
-      :options="chartOptions"
-    />
-  </div>
+  <Line 
+    :data="jsonData"
+  />
 </template>
 
 
 <script lang="ts">
-import { Bar } from 'vue-chartjs'
-import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js'
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+} from 'chart.js'
+import { Line } from 'vue-chartjs'
 import axios from 'axios';
 import { server } from '../helper';
 import { ref, onMounted } from 'vue'
-import ChartDataLabels from 'chartjs-plugin-datalabels';
-import chartTrendline from 'chartjs-plugin-trendline';
-
 
 // https://stackoverflow.com/questions/63279050/chart-js-not-dispalying-data-array-that-comes-from-an-axios-request
 
-ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, ChartDataLabels, chartTrendline);
-ChartJS.defaults.set('plugins.datalabels', {
-  color: '#3A3226'
-});
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend)
 
 export default {
-  name: 'BarChart',
-  components: { Bar },
+  name: 'App',
+  components: { Line },
   data() {
     return {
       jsonData: {
         labels: [],
-        datasets: [
-          {
-            data: [],
-            backgroundColor: '#A8D8B9',
-            trendlineLinear: {
-                colorMin: "rgb(203, 27, 69, 0.5)",
-                colorMax: "rgb(203, 27, 69, 0.5)",
-                lineStyle: "dotted|solid",
-                width: 2
-            }
-          }
-        ]
+        datasets:[{data: []}]
       },
       chartOptions: {
         responsive: true,
-        maintainAspectRatio: true,
+        maintainAspectRatio: false,
         plugins: {
             title: {
               display: true,
               text: 'Custom Chart Title'
-            },
-            legend: {
-              display: false
             }
         }
       }
@@ -70,19 +56,7 @@ export default {
       //console.log(this.jsonData)
       this.jsonData = {
         labels: years,
-        datasets: [
-          {
-            data: yearCount,
-            backgroundColor: '#A8D8B9',
-            trendlineLinear: {
-                colorMin: "rgb(203, 27, 69, 0.5)",
-                colorMax: "rgb(203, 27, 69, 0.5)",
-                lineStyle: "dotted|solid",
-                width: 2,
-                projection: true
-            }
-          }
-        ],
+        datasets:[{data: yearCount}]
       }
       console.log(this.jsonData)
     },
@@ -97,6 +71,7 @@ export default {
           var years = [];
           var yearCount = []
           var keys = Object.keys(publishTimeData)
+          console.log(keys)
           keys.unshift(keys[4])
           keys.splice(5, 7)
           keys.push("Unknown")

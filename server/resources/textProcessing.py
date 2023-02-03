@@ -8,28 +8,27 @@ from nltk.stem import LancasterStemmer, WordNetLemmatizer
 from collections import defaultdict
 
 
-def preprocess(ogReviews, sentiments):
+def preprocess(titles):
     nltk.download('stopwords')
     nltk.download('wordnet')
     nltk.download('omw-1.4')
-    positive = defaultdict(int)
-    negative = defaultdict(int)
+    processedTitles = defaultdict(int)
     stopword_list = nltk.corpus.stopwords.words('english')
     tokenizer = ToktokTokenizer()
     lemmatizer = WordNetLemmatizer()
 
-    for index, ogReview in enumerate(ogReviews):
+    for index, ogTitle in enumerate(titles):
         # Remove html strips
-        soup = BeautifulSoup(ogReview, "html.parser")
-        ogReview = soup.get_text()
+        soup = BeautifulSoup(ogTitle, "html.parser")
+        ogTitle = soup.get_text()
 
         # Remove non-letter characters and convert the string to lower case
-        ogReview = re.sub('\[[^]]*\]', '', ogReview)
-        ogReview = re.sub("[^a-zA-Z]", " ", ogReview)
-        ogReview = ogReview.lower()
+        ogTitle = re.sub('\[[^]]*\]', '', ogTitle)
+        ogTitle = re.sub("[^a-zA-Z]", " ", ogTitle)
+        ogTitle = ogTitle.lower()
 
         # Text stemming
-        text = ' '.join([lemmatizer.lemmatize(word) for word in ogReview.split()])
+        text = ' '.join([lemmatizer.lemmatize(word) for word in ogTitle.split()])
 
         # Remove stopwords
         tokens = tokenizer.tokenize(text)
@@ -37,15 +36,11 @@ def preprocess(ogReviews, sentiments):
         filtered_tokens = [token for token in tokens if token not in stopword_list]
         filtered_text = ' '.join(filtered_tokens)
 
-        if sentiments[index + 1] == "positive":
-            for token in filtered_tokens:
-                positive[token] += 1
-        else:
-            for token in filtered_tokens:
-                negative[token] += 1
+        for token in filtered_tokens:
+            processedTitles[token] += 1
 
-    print("Process complete")
-    return positive, negative
+    print("Pre-process complete")
+    return processedTitles
 
 
 def ShowWordCloud(word_list: list[str]):

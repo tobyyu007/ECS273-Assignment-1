@@ -68,10 +68,6 @@ const props = {
     type: [String, Array], // using d3 color schemes or self defined colors
     default: 'Category10'
   },
-  jsonData: {
-    type: Array,
-    required: false
-  },
   nameKey: {
     type: String,
     default: 'name'
@@ -104,22 +100,18 @@ export default {
   created() {
     axios.post(`${server}/fetchExample`)
         .then(resp => {
-            //console.log(resp.data.wordCount);
-            //this.jsonData = resp.data.wordCount;
-            var wordCount = resp.data.wordCount;
-            var words = Object.keys(wordCount);
-            var wordCountIndex = 0;
-            var resultArray = Object.keys(wordCount).map(function(word){
-                let person = {
-                  "name": words[wordCountIndex],
-                  "value": wordCount[word]
+            var titleData = resp.data.titles;
+            var titles = Object.keys(titleData);
+            var titlesIndex = 0;
+            var resultArray = Object.keys(titleData).map(function(title){
+                let titleCount = {
+                  "name": titles[titlesIndex],
+                  "value": titleData[title]
                 }
-                wordCountIndex++;
-                return person;
+                titlesIndex++;
+                return titleCount;
             });
-            //console.log(resultArray);
             this.jsonData = resultArray;
-            console.log(this.jsonData);
             this.chart = this.createChart()
             this.renderChart()
             return true;
@@ -139,13 +131,13 @@ export default {
       const words = jsonData.sort(function (a, b) {
         return parseFloat(b[valueKey]) - parseFloat(a[valueKey])
       })
-      return words.slice(0, 100)
+      return words.slice(0, 150)
     }
   },
   mounted () {
     this.getSize()
-    this.chart = this.createChart()
-    this.renderChart()
+    //this.chart = this.createChart()
+    //this.renderChart()
   },
   methods: {
     onResize () {
@@ -249,8 +241,6 @@ export default {
                 tooltip.transition()
                     .duration(200)
                     .style("opacity", .7)
-                console.log(d);
-                //tooltip.html("test");
                 tooltip.html(d.srcElement.__data__.name + "<br/>" + '(' + d.srcElement.__data__.value + ')')
             })
             .on("mousemove", function(d) {

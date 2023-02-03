@@ -1,20 +1,21 @@
 <script lang="ts">
-import Notes from './components/Notes.vue'
-import Example from './components/Example.vue'
-import ExampleWithLegend from './components/ExampleWithLegend.vue';
+// https://github.com/feifang/vue-wordcloud
+// https://www.kaggle.com/code/davidmezzetti/cord-19-analysis-with-sentence-embeddings
+// https://www.kaggle.com/code/mobassir/mining-covid-19-scientific-papers
+// https://www.kaggle.com/code/gpreda/cord-19-solution-toolbox/notebook
+
 import wordcloud from './components/WordCloud.vue'
-import ExampleWithInteractions from './components/ExampleWithInteractions.vue';
-import { createStore } from './stores/index';
+import barchart from './components/BarChart.vue'
+
 
 export default {
   name: 'app',
   components: {
     wordcloud,
-    ExampleWithLegend,
-    Notes
+    barchart
   },
   methods: {
-    wordClickHandler(name, value, vm) {s
+    wordClickHandler(name, value, vm) {
       console.log('wordClickHandler', name, value, vm);
     }
   },
@@ -40,7 +41,7 @@ export default {
         </wordcloud>
       </v-col>
       <v-col>
-        <Notes/>
+        <barchart/>
       </v-col>
     </v-row>
   </v-container>

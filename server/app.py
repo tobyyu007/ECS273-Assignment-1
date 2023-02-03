@@ -17,17 +17,19 @@ def hello_world():
 @app.route("/fetchExample", methods=["GET", "POST"])
 @cross_origin()
 def fetchExample():
-    positiveDataPath = Path("../server/data/positiveData.json")
-    negativeDataPath = Path("../server/data/negativeData.json")
+    titlesPath = Path("../server/data/titles.json")
+    publishTimePath = Path("../server/data/publishTime.json")
 
-    if not positiveDataPath.is_file() or not negativeDataPath.is_file():
-        process()
+    if not titlesPath.is_file() or not publishTimePath.is_file():
+        process(str(titlesPath), str(publishTimePath))
 
-    positiveJson = open(positiveDataPath, "r")
-    negativeJson = open(negativeDataPath, "r")
+    titlesFile = open(titlesPath, "r")
+    publishTimeFile = open(publishTimePath, "r")
 
-    jsonFile = json.load(positiveJson)
-    resp = jsonify(wordCount=jsonFile)
+    titlesJson = json.load(titlesFile)
+    publishTimeJson = json.load(publishTimeFile)
+
+    resp = jsonify(titles=titlesJson, publishTime=publishTimeJson)
 
     return resp
 

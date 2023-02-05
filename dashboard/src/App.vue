@@ -29,26 +29,25 @@ export default {
 </script>
 
 <template>
-  <v-container id="main-container" class="d-flex flex-column flex-nowrap" fluid>
-    <v-row no-gutters>
-      <v-col>
-        <wordcloud
-          nameKey="name"
-          valueKey="value"
-          :color="myColors"
-          :showTooltip="true"
-          :wordClick="wordClickHandler">
-        </wordcloud>
-      </v-col>
-      <v-col>
-        <barchart/>
-      </v-col>
-    </v-row>
-  </v-container>
+  <div id="body" style="text-align: center">
+    <v-container id="main-container" class="d-flex flex-column flex-nowrap" fluid>
+      <v-row no-gutters>
+        <v-col>
+          <wordcloud/>
+          <h3 class="ma-2">test2</h3>
+        </v-col>
+        <v-col>
+          <barchart/>
+        </v-col>
+      </v-row>
+    </v-container>
+  </div>
 </template>
 
-<style scoped>
-#main-container{
+<style>
+#body {
   height: 100%;
+  display:flex; flex-direction:column; justify-content:center;
+  min-height:100vh;
 }
 </style>

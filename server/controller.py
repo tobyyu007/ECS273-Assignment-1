@@ -52,6 +52,3 @@ def process(titlesPath, journalsPath):
         json.dump(abstractsSliced, outputFile)
     with open(journalsPath, "w") as outputFile:
         json.dump(publishTime, outputFile)
-
-
-# process("../server/data/titles.json", "../server/data/publishTime.json")

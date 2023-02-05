@@ -1,9 +1,4 @@
 <script lang="ts">
-// https://github.com/feifang/vue-wordcloud
-// https://www.kaggle.com/code/davidmezzetti/cord-19-analysis-with-sentence-embeddings
-// https://www.kaggle.com/code/mobassir/mining-covid-19-scientific-papers
-// https://www.kaggle.com/code/gpreda/cord-19-solution-toolbox/notebook
-
 import wordcloud from './components/WordCloud.vue'
 import barchart from './components/BarChart.vue'
 
@@ -33,7 +28,7 @@ export default {
           <wordcloud/>
         </v-col>
         <v-col>
-          <h3 class="chartTitle">Number of Papers by Publication Month Between Nov 2019 to Jan 2023</h3>
+          <h3 class="chartTitle">Number of Papers by Publication Month Between Nov. 2019 to Jan. 2023</h3>
           <br>
           <barchart/>
         </v-col>
@@ -52,7 +47,7 @@ export default {
           <p style="font-weight: bolder;"> Features: </p>
             <ul>
               <li>Displays a red line as the trend line of the chart</li>
-              <li>Hover over any bar to view the number of papers</li>
+              <li>Hover over any bar to view the number of papers in that month</li>
             </ul>
             <p style="margin-top: 15px;font-weight: bolder;"> Insight: </p>
             The chart shows a significant increase in the number of published papers, rising by over 10 times, at the outset of the pandemic in 2020. However, as the pandemic situation stabilized, the number of publications has decreased.
@@ -64,9 +59,8 @@ export default {
 
 <style>
 #body {
-  height: 100%;
+  height: 850px;
   display:flex; flex-direction:column; justify-content:center;
-  min-height:100vh;
 }
 .title {
   font-familt: 'Aerial';
@@ -77,9 +71,12 @@ export default {
   font-familt: 'Aerial';
   font-size: 20px;
   text-align: center;
+  margin-right: 15px;
+  margin-left: 15px;
 }
 .description {
   text-align: left;
+  margin-top: 25px;
   margin-right: 35px;
   margin-left: 35px;
   font-size: 16px;

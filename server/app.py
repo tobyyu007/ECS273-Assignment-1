@@ -3,6 +3,7 @@ from flask_cors import CORS, cross_origin
 from controller import process
 import json
 from pathlib import Path
+import sys
 
 app = Flask(__name__)
 CORS(app)
@@ -21,6 +22,7 @@ def fetchExample():
     publishTimePath = Path("../server/data/publishTime.json")
 
     if not titlesPath.is_file() or not publishTimePath.is_file():
+        print('data not found, start processing data', file=sys.stderr)
         process(str(titlesPath), str(publishTimePath))
 
     titlesFile = open(titlesPath, "r")

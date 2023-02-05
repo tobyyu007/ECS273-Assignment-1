@@ -22,10 +22,10 @@ export default {
       margin: {top: 15, bottom: 15, left: 15, right: 15},
       rotate: {from: -60, to: 60, numOfOrientation: 10},
       fontSize: [8, 85],
-      color: ['#CB1B45', '#D05A6E', '#F596AA', '#DC9FB4']
+      color: ['#AB3B3A', '#CB1B45', '#E87A90', '#F8C3CD']
     }
   },
-  created() // 從後端讀取資料
+  created() // fetch data from backend
   {
     axios.post(`${server}/fetchExample`)
         .then(resp => {
@@ -40,7 +40,8 @@ export default {
                 titlesIndex++;
                 return titleCount;
             });
-            this.getSize()
+            this.svgWidth = this.$el.clientWidth
+            this.svgHeight = this.$el.clientHeight
             this.jsonData = resultArray
             this.chart = this.createChart()
             this.renderChart()
@@ -75,15 +76,11 @@ export default {
         method.call(context)
       }, 200)
     },
-    onResize () 
-    {
-      this.getSize()
-      this.throttle(this.update)
-    },
-    getSize () 
+    onResize ()
     {
       this.svgWidth = this.$el.clientWidth
       this.svgHeight = this.$el.clientHeight
+      this.throttle(this.update)
     },
     createChart () 
     {
@@ -99,13 +96,13 @@ export default {
                          .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
       return chart
     },
-    getRotation () 
+    getRotation ()
     {
       const { from: x1, to: x2, numOfOrientation: n } = this.rotate
       const multiplier = ((Math.abs(x1) + Math.abs(x2)) / (n - 1)) || 1
       return { a: n, b: (x1 / multiplier), c: multiplier }
     },
-    setFontSizeScale () 
+    setFontSizeScale ()
     {
       const { fontSize, words } = this
       this.fontSizeScale = d3.scaleSqrt()
@@ -133,10 +130,9 @@ export default {
       this.layout = layout
       layout.start()
     },
-    draw (jsonData) 
+    draw (jsonData)
     {
       const { layout, chart, color, showTooltip, wordClick, fontSizeScale } = this
-      const fill = d3.scaleOrdinal(color)
       const centeredChart = chart.append('g')
               .attr('transform', 'translate(' + layout.size()[0] / 2 + ',' + layout.size()[1] / 2 + ')')
       const tooltip = d3.select("body").append("div")
@@ -147,21 +143,17 @@ export default {
               .enter().append('text')
               .style('font-size', d => d.size + 'px')
               .style('font-family', d => d.font)
-              .style('fill', function(d){
+              .style('fill', function(d){ // 根據出現頻率自訂文字顏色
                 if (d.size > 45){
-                  console.log("0")
                   return color[0]
                 }
                 else if (d.size > 25 && d.size <=45){
-                  console.log("1")
                   return color[1]
                 }
                 else if (d.size > 15 && d.size <= 25){
-                  console.log("2")
                   return color[2]
                 }
                 else{
-                  console.log("3")
                   return color[3]
                 }
               })
@@ -172,6 +164,7 @@ export default {
               .attr('transform', (d) => { return 'translate(' + [d.x, d.y] + ')rotate(' + d.rotate + ')' })
               .text(d => d.text)
       text.on("mouseover", function(d) {
+                // 估計 tooltip 的長度
                 var canvas = document.createElement("canvas");
                 var context = canvas.getContext("2d");
                 context.font = "13px Arial";
@@ -183,12 +176,13 @@ export default {
                 else{
                   var formattedWidth = Math.ceil(valueWidth) + "px;";
                 }
+                
                 tooltip.transition()
                     .duration(200)
                     .style("opacity", .8)
                 tooltip.html(
                   "<p style=\"font-weight: bolder; font-size:13px;\">" + d.srcElement.__data__.word + "</p>" + '(' + d.srcElement.__data__.value + ')' +
-                  "<style>" + "div.wordcloud--tooltip {width: " + formattedWidth
+                  "<style>" + "div.wordcloud--tooltip {width: " + formattedWidth + ";} </style>"
                   )
             })
             .on("mousemove", function(d) {
@@ -225,7 +219,7 @@ export default {
   display: inline-block;
   position: relative;
   width: 100%;
-  height: 400px;
+  height: 100%;
 }
 .wordCloud svg {
   display: inline-block;

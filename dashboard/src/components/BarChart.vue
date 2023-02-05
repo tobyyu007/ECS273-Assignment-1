@@ -1,5 +1,5 @@
 <template>
-  <div style="height: 360px; margin-right: 15px; margin-left: 15px;">
+  <div style="height: 370px; margin-right: 15px; margin-left: 15px;">
     <Bar 
       :data="jsonData"
       :options="chartOptions"
@@ -29,8 +29,9 @@ export default {
         datasets: [
           {
             data: [],
-            backgroundColor: '#81C7D4',
-            trendlineLinear: {
+            backgroundColor: '#A5DEE4',
+            trendlineLinear:  // trendline 設定
+            {
                 colorMin: "rgb(203, 27, 69, 0.5)",
                 colorMax: "rgb(203, 27, 69, 0.5)",
                 lineStyle: "dotted|solid",
@@ -60,20 +61,20 @@ export default {
     }
   },
   mounted(){
-    this.loadData()
+    this.loadData()  // 將資料讀入 chart 中
   },
 
   methods:
   {
     updateChart(years, yearCount){
-      //console.log(this.jsonData)
       this.jsonData = {
         labels: years,
         datasets: [
           {
             data: yearCount,
-            backgroundColor: '#81C7D4',
-            trendlineLinear: {
+            backgroundColor: '#A5DEE4',
+            trendlineLinear:  // trendline 設定
+            {
                 colorMin: "rgb(203, 27, 69, 0.5)",
                 colorMax: "rgb(203, 27, 69, 0.5)",
                 lineStyle: "dotted|solid",
@@ -84,7 +85,8 @@ export default {
       }
     },
 
-    async loadData() {
+    async loadData()  // 從前端取值
+    {
       await axios.post(`${server}/fetchExample`)
       .then(resp => {
           var publishTimeData = resp.data.publishTime;

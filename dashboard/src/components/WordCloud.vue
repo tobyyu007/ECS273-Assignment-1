@@ -22,7 +22,7 @@ export default {
       margin: {top: 15, bottom: 15, left: 15, right: 15},
       rotate: {from: -60, to: 60, numOfOrientation: 10},
       fontSize: [8, 85],
-      color: ['#CB1B45', '#E87A90', '#F596AA', '#F8C3CD']
+      color: ['#CB1B45', '#D05A6E', '#F596AA', '#DC9FB4']
     }
   },
   created() // 從後端讀取資料
@@ -34,14 +34,13 @@ export default {
             var titlesIndex = 0;
             var resultArray = Object.keys(titleData).map(function(title){
                 let titleCount = {
-                  "name": titles[titlesIndex],
+                  "word": titles[titlesIndex],
                   "value": titleData[title]
                 }
                 titlesIndex++;
                 return titleCount;
             });
             this.getSize()
-            console.log(resultArray)
             this.jsonData = resultArray
             this.chart = this.createChart()
             this.renderChart()
@@ -125,9 +124,9 @@ export default {
               .size([width, height])
               .words(words)
               .fontSize(d => fontSizeScale(d['value']))
-              .text(d => d["name"])
+              .text(d => d["word"])
               .font('Impact')
-              .padding(1.5)
+              .padding(1)
               .rotate(() => { return (~~(Math.random() * a) + b) * c })
               .spiral('archimedean')
               .on('end', this.draw)
@@ -136,7 +135,7 @@ export default {
     },
     draw (jsonData) 
     {
-      const { layout, chart, color, showTooltip, wordClick } = this
+      const { layout, chart, color, showTooltip, wordClick, fontSizeScale } = this
       const fill = d3.scaleOrdinal(color)
       const centeredChart = chart.append('g')
               .attr('transform', 'translate(' + layout.size()[0] / 2 + ',' + layout.size()[1] / 2 + ')')
@@ -148,7 +147,24 @@ export default {
               .enter().append('text')
               .style('font-size', d => d.size + 'px')
               .style('font-family', d => d.font)
-              .style('fill', (d, i) => fill(i))
+              .style('fill', function(d){
+                if (d.size > 45){
+                  console.log("0")
+                  return color[0]
+                }
+                else if (d.size > 25 && d.size <=45){
+                  console.log("1")
+                  return color[1]
+                }
+                else if (d.size > 15 && d.size <= 25){
+                  console.log("2")
+                  return color[2]
+                }
+                else{
+                  console.log("3")
+                  return color[3]
+                }
+              })
               .attr('class', 'text')
               .attr('text-anchor', 'middle')
       text.transition()
@@ -159,7 +175,7 @@ export default {
                 var canvas = document.createElement("canvas");
                 var context = canvas.getContext("2d");
                 context.font = "13px Arial";
-                var textWidth = context.measureText(d.srcElement.__data__.name).width + 16;
+                var textWidth = context.measureText(d.srcElement.__data__.word).width + 16;
                 var valueWidth = context.measureText(d.srcElement.__data__.value).width + 16;
                 if (textWidth > valueWidth){
                   var formattedWidth = Math.ceil(textWidth) + "px;";
@@ -171,7 +187,7 @@ export default {
                     .duration(200)
                     .style("opacity", .8)
                 tooltip.html(
-                  "<p style=\"font-weight: bolder; font-size:13px;\">" + d.srcElement.__data__.name + "</p>" + '(' + d.srcElement.__data__.value + ')' +
+                  "<p style=\"font-weight: bolder; font-size:13px;\">" + d.srcElement.__data__.word + "</p>" + '(' + d.srcElement.__data__.value + ')' +
                   "<style>" + "div.wordcloud--tooltip {width: " + formattedWidth
                   )
             })
@@ -183,9 +199,6 @@ export default {
                 tooltip.transition()
                     .duration(500)
                     .style("opacity", 0)
-                tooltipPointer.transition()
-                    .duration(200)
-                    .style("opacity", .85)
         });
     },
     update () // 當大小改變時，重新製圖

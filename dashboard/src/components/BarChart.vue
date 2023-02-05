@@ -1,5 +1,5 @@
 <template>
-  <div style="height: 400px">
+  <div style="height: 360px; margin-right: 15px; margin-left: 15px;">
     <Bar 
       :data="jsonData"
       :options="chartOptions"
@@ -14,16 +14,10 @@ import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, Li
 import axios from 'axios';
 import { server } from '../helper';
 import { ref, onMounted } from 'vue'
-import ChartDataLabels from 'chartjs-plugin-datalabels';
 import chartTrendline from 'chartjs-plugin-trendline';
 
 
-// https://stackoverflow.com/questions/63279050/chart-js-not-dispalying-data-array-that-comes-from-an-axios-request
-
-ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, ChartDataLabels, chartTrendline);
-ChartJS.defaults.set('plugins.datalabels', {
-  color: '#3A3226'
-});
+ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, chartTrendline);
 
 export default {
   name: 'BarChart',
@@ -35,18 +29,33 @@ export default {
         datasets: [
           {
             data: [],
-            backgroundColor: '#E87A90',
+            backgroundColor: '#81C7D4',
+            trendlineLinear: {
+                colorMin: "rgb(203, 27, 69, 0.5)",
+                colorMax: "rgb(203, 27, 69, 0.5)",
+                lineStyle: "dotted|solid",
+                width: 2
+            }
           }
         ]
       },
       chartOptions: {
         responsive: true,
         maintainAspectRatio: false,
+        scales: {
+            y: {
+                title: {
+                    display: true,
+                    text: "Number of papers",
+                    font: {size: 15}
+                }
+            }
+        },
         plugins: {
             legend: {
               display: false
             }
-        }
+        },
       }
     }
   },
@@ -63,33 +72,32 @@ export default {
         datasets: [
           {
             data: yearCount,
-            backgroundColor: '#E87A90',
+            backgroundColor: '#81C7D4',
+            trendlineLinear: {
+                colorMin: "rgb(203, 27, 69, 0.5)",
+                colorMax: "rgb(203, 27, 69, 0.5)",
+                lineStyle: "dotted|solid",
+                width: 2
+            }
           }
         ],
       }
-      console.log(this.jsonData)
     },
 
     async loadData() {
       await axios.post(`${server}/fetchExample`)
       .then(resp => {
           var publishTimeData = resp.data.publishTime;
-          //console.log(publishTimeData);
           var publishTimes = Object.keys(publishTimeData);
           var publishTimeDataIndex = 0;
           var years = [];
           var yearCount = []
           var keys = Object.keys(publishTimeData)
-          keys.unshift(keys[4])
-          keys.splice(5, 7)
-          keys.push("Unknown")
           for (var key of keys){
             years.push(key)
             yearCount.push(publishTimeData[key])
           }
           this.updateChart(years, yearCount)
-          //console.log(years);
-          //console.log(yearCount);
           return true;
       })
       .catch(error => console.log(error));

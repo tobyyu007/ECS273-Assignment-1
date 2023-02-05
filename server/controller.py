@@ -11,30 +11,19 @@ def process(titlesPath, journalsPath):
     abstracts = preprocess(covid19Data['abstract'][:])
     abstracts = dict(sorted(abstracts.items(), key=lambda item: item[1], reverse=True))
     abstractsSliced = {a: abstracts[a] for a in list(abstracts)[:500]}  # 取出次數前五百名
-    print(abstractsSliced)
 
     # 處理 publish time
-    publishTime = defaultdict(int)
-    unknownTime = defaultdict(int)
-    beforeTime = defaultdict(int)
+    yearMonth = defaultdict(int)
     for index, time in enumerate(covid19Data['publish_time'][1:]):
         if str(time).split('-')[0] != "nan":
-            year = int(str(time).split('-')[0])
-            if year < 2020:
-                beforeTime["Before 2020"] += 1
-            elif year > 2023:
-                unknownTime["Unknown"] += 1
-            else:
-                publishTime[year] += 1
-        else:
-            unknownTime["Unknown"] += 1
-    publishTime = dict(sorted(publishTime.items()))
-    publishTime = dict(ChainMap(publishTime, dict(beforeTime)))
-    publishTime = dict(ChainMap(dict(unknownTime), publishTime))
+            timeSplit = str(time).split('-')
+            if len(timeSplit) > 1 and 2019 <= int(timeSplit[0]) < 2024:
+                if int(timeSplit[0]) == 2019 and int(timeSplit[1]) >= 11:
+                    yearMonth[str(timeSplit[0]) + "-" + str(timeSplit[1])] += 1
+                elif int(timeSplit[0]) >= 2020:
+                    yearMonth[str(timeSplit[0]) + "-" + str(timeSplit[1])] += 1
 
     with open(titlesPath, "w") as outputFile:
         json.dump(abstractsSliced, outputFile)
     with open(journalsPath, "w") as outputFile:
-        json.dump(publishTime, outputFile)
-
-# process("../server/data/titles.json", "../server/data/publishTime.json")
+        json.dump(yearMonth, outputFile)

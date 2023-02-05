@@ -36,4 +36,3 @@ def fetchExample():
 
 if __name__ == "__main__":
     app.run(port=3100, debug=True)
-    # fetchExample()

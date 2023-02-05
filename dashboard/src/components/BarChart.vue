@@ -1,5 +1,5 @@
 <template>
-  <div style="height: 500px">
+  <div style="height: 400px">
     <Bar 
       :data="jsonData"
       :options="chartOptions"
@@ -35,24 +35,14 @@ export default {
         datasets: [
           {
             data: [],
-            backgroundColor: '#A8D8B9',
-            trendlineLinear: {
-                colorMin: "rgb(203, 27, 69, 0.5)",
-                colorMax: "rgb(203, 27, 69, 0.5)",
-                lineStyle: "dotted|solid",
-                width: 2
-            }
+            backgroundColor: '#E87A90',
           }
         ]
       },
       chartOptions: {
         responsive: true,
-        maintainAspectRatio: true,
+        maintainAspectRatio: false,
         plugins: {
-            title: {
-              display: true,
-              text: 'Custom Chart Title'
-            },
             legend: {
               display: false
             }
@@ -73,14 +63,7 @@ export default {
         datasets: [
           {
             data: yearCount,
-            backgroundColor: '#A8D8B9',
-            trendlineLinear: {
-                colorMin: "rgb(203, 27, 69, 0.5)",
-                colorMax: "rgb(203, 27, 69, 0.5)",
-                lineStyle: "dotted|solid",
-                width: 2,
-                projection: true
-            }
+            backgroundColor: '#E87A90',
           }
         ],
       }

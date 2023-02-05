@@ -13,16 +13,6 @@ export default {
   components: {
     wordcloud,
     barchart
-  },
-  methods: {
-    wordClickHandler(name, value, vm) {
-      console.log('wordClickHandler', name, value, vm);
-    }
-  },
-  data() {
-    return {
-      myColors: ['#1f77b4', '#629fc9', '#94bedb', '#c9e0ef'],
-    }
   }
 }
 
@@ -33,10 +23,17 @@ export default {
     <v-container id="main-container" class="d-flex flex-column flex-nowrap" fluid>
       <v-row no-gutters>
         <v-col>
+          <h1 class="title">Data Visualization for COVID-19 Open Research Dataset</h1>
+          <br/><br/>
+        </v-col>
+      </v-row>
+      <v-row no-gutters>
+        <v-col>
+          <h3 class="description">Most Frequent Words in Paper's Abstract</h3>
           <wordcloud/>
-          <h3 class="ma-2">test2</h3>
         </v-col>
         <v-col>
+          <h3 class="description">Number of Articles by Publication Year</h3>
           <barchart/>
         </v-col>
       </v-row>
@@ -49,5 +46,14 @@ export default {
   height: 100%;
   display:flex; flex-direction:column; justify-content:center;
   min-height:100vh;
+}
+.description {
+  font-familt: 'Aerial';
+  font-size: 18px;
+}
+.title {
+  font-familt: 'Aerial';
+  font-size: 35px;
+  text-align: center;
 }
 </style>
